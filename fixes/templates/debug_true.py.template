@@ -1,0 +1,21 @@
+{
+  "vulnerability_name": "Debug Mode in Production",
+  "old_code": "DEBUG = True",
+  "new_code_minimal": "DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ('true', '1')",
+  "new_code_comprehensive": "import os\nDEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ('true', '1')\nif DEBUG:\n    # Ensure debug is never True in production by convention\n    if os.environ.get('ENV') == 'production':\n        raise RuntimeError('DEBUG must not be True in production')",
+  "explanation": "This fix makes debug mode depend on an environment variable instead of a hardcoded True. Debug mode in production exposes stack traces and other sensitive information.",
+  "security_rationale": "When DEBUG is True, frameworks often expose detailed error pages, internal URLs, and configuration. In production this helps attackers understand your stack and find bugs to exploit.",
+  "why_ai_generated_this": "AI copies configuration from tutorials where DEBUG=True is the default for local development, and that setting gets committed for production.",
+  "prerequisites": [
+    "Set DEBUG via environment (e.g. DJANGO_DEBUG, FLASK_DEBUG). Default to False in production."
+  ],
+  "additional_steps": [
+    "In production, set ENV=production or similar and enforce DEBUG=False",
+    "Use separate settings modules or env-based config for dev vs prod"
+  ],
+  "testing_suggestion": "Deploy with DEBUG=False and confirm error pages do not expose stack traces.",
+  "references": [
+    "https://owasp.org/www-community/vulnerabilities/Debug_mode",
+    "https://cwe.mitre.org/data/definitions/489.html"
+  ]
+}

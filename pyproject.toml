@@ -1,0 +1,113 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opencore-mcp"
+version = "0.1.0"
+description = "Production-ready MCP server for code analysis, fixing, and dependency management with configurable rules engine"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "OpenCore Team" }
+]
+keywords = ["mcp", "model-context-protocol", "code-analysis", "linter", "fixer"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "packaging>=22.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "semver>=3.0.0",
+    "watchdog>=3.0",
+    "tomli>=2.0; python_version < '3.11'",
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/opencore/opencore-mcp"
+Documentation = "https://github.com/opencore/opencore-mcp#readme"
+Repository = "https://github.com/opencore/opencore-mcp"
+
+[project.scripts]
+opencore-mcp = "opencore_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opencore_mcp"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"rules" = "rules"
+"fixes" = "fixes"
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/rules", "/fixes", "/tests"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --tb=short"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = ["E501"]
+exclude = [".git", ".mypy_cache", ".ruff_cache", "build", "dist"]
+
+[tool.ruff.isort]
+known-first-party = ["opencore_mcp"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = ["tests/"]

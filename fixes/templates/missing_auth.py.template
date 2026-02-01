@@ -1,0 +1,21 @@
+{
+  "vulnerability_name": "Missing Authentication",
+  "old_code": "def get_users(request):\n    return User.objects.all()",
+  "new_code_minimal": "@login_required\ndef get_users(request):\n    return User.objects.all()",
+  "new_code_comprehensive": "from django.contrib.auth.decorators import login_required\n\n@login_required\ndef get_users(request):\n    if not request.user.has_perm('app.view_user'):\n        raise PermissionDenied\n    return User.objects.filter(tenant=request.user.tenant)",
+  "explanation": "This fix adds authentication (and optionally authorization) so that only authenticated users can access the view. Without it, anyone can call the endpoint and access data.",
+  "security_rationale": "Authentication ensures the client is who they claim to be. Decorators like @login_required run before the view and redirect or return 401 for unauthenticated requests.",
+  "why_ai_generated_this": "AI-generated examples often omit auth for brevity, leading to unprotected views when developers copy the pattern.",
+  "prerequisites": [
+    "Use your framework's auth decorator: Django @login_required, Flask-Login @login_required, or equivalent middleware"
+  ],
+  "additional_steps": [
+    "Add permission checks where needed (e.g. has_perm, role checks)",
+    "Protect all sensitive views, not just this one"
+  ],
+  "testing_suggestion": "Call the view without authentication (expect 302/401) and with a valid session (expect 200).",
+  "references": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+    "https://cwe.mitre.org/data/definitions/306.html"
+  ]
+}

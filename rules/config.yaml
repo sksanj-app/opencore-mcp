@@ -1,0 +1,117 @@
+# OpenCore MCP Rules Configuration
+# https://github.com/opencore/opencore-mcp
+
+# Fix strategy: auto (apply when safe), prompt (suggest to user), none
+fix_strategy: auto
+
+# =============================================================================
+# 1. Language Detection Mapping
+# Maps file extensions to rule sets for security scanning
+# =============================================================================
+
+extensions:
+  .js: javascript
+  .jsx: javascript
+  .ts: typescript
+  .tsx: typescript
+  .mjs: javascript
+  .cjs: javascript
+  .py: python
+  .pyx: python
+
+default_languages:
+  - python
+  - typescript
+  - javascript
+
+# =============================================================================
+# 2. Severity Scoring Guidelines
+# Used to prioritize findings; critical issues block, low may be informational
+# =============================================================================
+
+severity_levels:
+  error: 1
+  warning: 2
+  info: 3
+
+severity_scoring:
+  critical:
+    # Immediate exploitation; fix before deployment
+    - Remote code execution (eval, pickle, command injection)
+    - SQL injection
+    - Authentication bypass
+    - Hardcoded secrets
+
+  high:
+    # Serious vulnerabilities; should be fixed promptly
+    - XSS
+    - Authorization bypass
+    - Path traversal
+    - Weak cryptography
+    - Insecure deserialization
+
+  medium:
+    # Important gaps; address in next release
+    - Missing input validation
+    - CSRF missing
+    - Verbose errors
+    - Missing security headers
+
+  low:
+    # Best practice improvements; fix when convenient
+    - Code quality with security implications
+    - Insecure defaults that are easily fixed
+
+# =============================================================================
+# 3. AI-Specific Risk Categories
+# Risks amplified when AI generates code: models may produce insecure patterns
+# that "look correct" but fail under adversarial input or edge cases
+# =============================================================================
+
+ai_specific_risks:
+  # AI often treats user input as trusted; real apps must validate at boundaries
+  trust_boundaries:
+    - Missing input validation
+    - Direct use of user input
+
+  # AI may over-engineer security instead of using battle-tested libraries
+  premature_optimization:
+    - Complex crypto instead of libraries
+    - Custom auth instead of proven solutions
+
+  # AI may copy "works in dev" patterns that are dangerous in production
+  works_over_secure:
+    - DEBUG=True
+    - CORS wildcards
+    - Disabled SSL verification
+
+  # AI snippets often omit critical production concerns for brevity
+  incomplete_examples:
+    - Missing auth middleware
+    - Hardcoded secrets
+    - No error handling
+
+# =============================================================================
+# 4. Default Configurations
+# Scan limits and exclusions to balance thoroughness with performance
+# =============================================================================
+
+default_config:
+  max_findings_per_scan: 1000
+  scan_timeout_seconds: 300
+
+  # Ignore dependency trees and generated artifacts; focus on source code
+  ignored_patterns:
+    - "**/node_modules/**"
+    - "**/.git/**"
+    - "**/venv/**"
+    - "**/__pycache__/**"
+    - "**/dist/**"
+    - "**/build/**"
+    - "**/.next/**"
+    - "**/test/**"
+    - "**/tests/**"
+    - "**/*.test.js"
+    - "**/*.test.ts"
+    - "**/*.spec.js"
+    - "**/*.spec.ts"

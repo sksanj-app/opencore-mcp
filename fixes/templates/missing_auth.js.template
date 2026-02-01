@@ -1,0 +1,23 @@
+{
+  "vulnerability_name": "Missing Authentication",
+  "old_code": "app.get('/api/users', (req, res) => { /* return users */ });",
+  "new_code_minimal": "app.get('/api/users', authMiddleware, (req, res) => { /* return users */ });",
+  "new_code_comprehensive": "const { authMiddleware, requireRole } = require('./auth');\napp.get('/api/users', authMiddleware, requireRole('user'), (req, res) => {\n  // req.user is set by authMiddleware\n  const users = await getUsersForTenant(req.user.tenantId);\n  res.json(users);\n});",
+  "explanation": "This fix adds authentication middleware so that only authenticated users can access the endpoint. Without it, anyone can call the API and access data.",
+  "security_rationale": "Authentication ensures that the client is who they claim to be. Middleware runs before the handler and can reject unauthenticated requests with 401.",
+  "why_ai_generated_this": "AI-generated API examples often omit auth for brevity, leading to unprotected routes when developers copy the pattern.",
+  "prerequisites": [
+    "Implement or use an auth middleware (e.g. passport, JWT verify) that sets req.user",
+    "Ensure tokens are validated on every protected route"
+  ],
+  "additional_steps": [
+    "Add authorization checks (e.g. requireRole) where needed",
+    "Protect all sensitive routes, not just this one",
+    "Use HTTPS and secure cookie options for session-based auth"
+  ],
+  "testing_suggestion": "Call the endpoint without a token (expect 401) and with a valid token (expect 200).",
+  "references": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+    "https://cwe.mitre.org/data/definitions/306.html"
+  ]
+}

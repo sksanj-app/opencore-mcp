@@ -1,0 +1,21 @@
+{
+  "vulnerability_name": "Code Injection via eval",
+  "old_code": "eval(userInput);",
+  "new_code_minimal": "// Use a safe alternative: JSON.parse for JSON, or a dedicated parser for the use case",
+  "new_code_comprehensive": "// For JSON: const data = JSON.parse(userInput);\n// For math: use a library like math.js or a simple whitelisted expression parser\n// Never execute arbitrary user input as code",
+  "explanation": "This fix removes eval() (or similar) so that user input is never executed as code. eval allows arbitrary JavaScript execution and leads to remote code execution.",
+  "security_rationale": "eval() runs the string as code in the current context. Any user input can contain code that steals data, modifies the app, or escalates privileges. There is almost always a safer alternative (JSON.parse, parser, or server-side logic).",
+  "why_ai_generated_this": "AI sometimes suggests eval() to \"evaluate a dynamic expression\" or \"parse something flexible\" without emphasizing the security risk.",
+  "prerequisites": [
+    "For JSON: use JSON.parse (and handle errors). For expressions: use a sandboxed library or server-side evaluation."
+  ],
+  "additional_steps": [
+    "Search the codebase for eval, new Function(.), and similar dynamic code execution",
+    "Replace with domain-specific parsers or APIs"
+  ],
+  "testing_suggestion": "Try input like: \"process.exit(1)\" or \"require('fs').readFileSync('/etc/passwd').toString()\" and confirm it is not executed.",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval#never_use_eval",
+    "https://cwe.mitre.org/data/definitions/95.html"
+  ]
+}

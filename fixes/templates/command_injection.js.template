@@ -1,0 +1,22 @@
+{
+  "vulnerability_name": "Command Injection",
+  "old_code": "exec(\"ls \" + userInput)",
+  "new_code_minimal": "execFile('ls', [userInput], (err, stdout, stderr) => { /* handle */ })",
+  "new_code_comprehensive": "const { execFile } = require('child_process');\nconst sanitized = userInput.replace(/[^a-zA-Z0-9._-]/g, '');\nif (!sanitized) throw new Error('Invalid input');\nexecFile('ls', [sanitized], { timeout: 5000 }, (err, stdout, stderr) => {\n  if (err) {\n    logger.warn('Command failed', { err: err.message });\n    return callback(err);\n  }\n  callback(null, stdout);\n});",
+  "explanation": "This fix avoids building a command string from user input. Using execFile with an array of arguments prevents the shell from interpreting user input as command syntax.",
+  "security_rationale": "When you pass a single string to exec(), it is run in a shell. User input can include ; or $() to run extra commands. execFile() runs the program directly with arguments as a list, so input is never parsed as shell code.",
+  "why_ai_generated_this": "AI often suggests exec() with string concatenation because it is the simplest way to \"run a command with a variable\" without considering injection.",
+  "prerequisites": [
+    "Use child_process.execFile (built-in) instead of exec when you need to pass arguments"
+  ],
+  "additional_steps": [
+    "Prefer execFile over exec whenever possible",
+    "Validate and whitelist allowed values for user-controlled arguments",
+    "Set a timeout to avoid hanging processes"
+  ],
+  "testing_suggestion": "Test with input like: userInput = \"; rm -rf /\" or \"$(whoami)\"",
+  "references": [
+    "https://nodejs.org/api/child_process.html#child_processexecfilefile-args-options-callback",
+    "https://cwe.mitre.org/data/definitions/78.html"
+  ]
+}

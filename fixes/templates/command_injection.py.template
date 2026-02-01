@@ -1,0 +1,22 @@
+{
+  "vulnerability_name": "Command Injection",
+  "old_code": "os.system(f\"ls {user_input}\")",
+  "new_code_minimal": "subprocess.run(['ls', user_input], shell=False)",
+  "new_code_comprehensive": "import subprocess\nsanitized = ''.join(c for c in user_input if c.isalnum() or c in '._-')\nif not sanitized:\n    raise ValueError('Invalid input')\nresult = subprocess.run(['ls', sanitized], capture_output=True, text=True, timeout=5)\nresult.check_returncode()",
+  "explanation": "This fix avoids building a command string from user input. Using subprocess.run() with a list of arguments and shell=False prevents the shell from interpreting user input as command syntax.",
+  "security_rationale": "os.system() and subprocess with shell=True run the command in a shell. User input can include ; or $(...) to run extra commands. With shell=False and a list, arguments are passed literally to the program.",
+  "why_ai_generated_this": "AI often suggests os.system() or shell=True because it is the simplest way to run a command; it does not account for injection when variables are embedded in the string.",
+  "prerequisites": [
+    "Use subprocess.run() with a list: subprocess.run([executable, arg1, arg2], shell=False)"
+  ],
+  "additional_steps": [
+    "Never use shell=True when any part of the command is user-controlled",
+    "Validate and whitelist allowed values for arguments",
+    "Set timeout= to avoid hanging processes"
+  ],
+  "testing_suggestion": "Test with input like: user_input = \"; rm -rf /\" or \"$(whoami)\"",
+  "references": [
+    "https://docs.python.org/3/library/subprocess.html#security-considerations",
+    "https://cwe.mitre.org/data/definitions/78.html"
+  ]
+}

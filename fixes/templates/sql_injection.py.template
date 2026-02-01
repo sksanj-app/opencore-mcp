@@ -1,0 +1,21 @@
+{
+  "vulnerability_name": "SQL Injection",
+  "old_code": "cursor.execute(f\"SELECT * FROM users WHERE id = {user_id}\")",
+  "new_code_minimal": "cursor.execute(\"SELECT * FROM users WHERE id = %s\", (user_id,))",
+  "new_code_comprehensive": "cursor.execute(\"SELECT * FROM users WHERE id = %s\", (user_id,))\nrow = cursor.fetchone()\nif not row:\n    raise NotFound(\"User not found\")\nreturn row",
+  "explanation": "This fix replaces string interpolation (f-strings, %, .format()) with parameterized queries. The database driver binds the value safely so it cannot alter the query structure.",
+  "security_rationale": "Parameterized queries ensure that user input is treated as data, not as part of the SQL statement. This completely eliminates SQL injection risk regardless of special characters in the input.",
+  "why_ai_generated_this": "AI often uses f-strings and .format() for SQL because they are syntactically simple; it does not emphasize that SQL requires parameterization, not string interpolation.",
+  "prerequisites": [
+    "No additional packages needed — use the placeholder style your DB driver supports (%s for psycopg2, ? for sqlite3)"
+  ],
+  "additional_steps": [
+    "Review all other execute() and raw() calls for similar patterns",
+    "Consider using an ORM (Django ORM, SQLAlchemy) for structured queries"
+  ],
+  "testing_suggestion": "Test with malicious input like: user_id = \"1 OR 1=1\" or \"1; DROP TABLE users;--\"",
+  "references": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+    "https://cwe.mitre.org/data/definitions/89.html"
+  ]
+}

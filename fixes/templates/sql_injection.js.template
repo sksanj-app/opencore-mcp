@@ -1,0 +1,26 @@
+{
+  "vulnerability_name": "SQL Injection",
+  "old_code": "db.query(\"SELECT * FROM users WHERE id = \" + userId)",
+  "new_code_minimal": "db.query(\"SELECT * FROM users WHERE id = ?\", [userId])",
+  "new_code_comprehensive": "const [rows] = await db.query(\"SELECT * FROM users WHERE id = ?\", [userId]);\nif (!rows || rows.length === 0) {\n  throw new NotFoundError('User not found');\n}\nreturn rows[0];",
+  "explanation": "This fix replaces string concatenation with parameterized queries, which prevents SQL injection by treating user input as data rather than executable SQL code.",
+  "security_rationale": "Parameterized queries ensure that user input cannot alter the structure of your SQL query, completely eliminating SQL injection risk. The database driver escapes and binds values safely.",
+  "why_ai_generated_this": "AI assistants often generate SQL injection vulnerabilities because string concatenation is syntactically simpler and appears in many code examples online.",
+  "prerequisites": [
+    "No additional packages needed — parameterized queries are built into most database libraries (mysql2, pg, better-sqlite3)"
+  ],
+  "additional_steps": [
+    "Review all other database queries for similar patterns",
+    "Consider using an ORM like Sequelize or TypeORM for additional safety"
+  ],
+  "comprehensive_steps": [
+    "Add input validation (e.g. ensure userId is a valid ID format)",
+    "Add error handling for database errors",
+    "Log failed lookups for security monitoring"
+  ],
+  "testing_suggestion": "Test with malicious input like: userId = \"1 OR 1=1\" or \"1; DROP TABLE users;--\"",
+  "references": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+    "https://cwe.mitre.org/data/definitions/89.html"
+  ]
+}

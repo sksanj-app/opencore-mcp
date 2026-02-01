@@ -1,0 +1,21 @@
+{
+  "vulnerability_name": "XSS via innerHTML",
+  "old_code": "element.innerHTML = userInput;",
+  "new_code_minimal": "element.textContent = userInput;",
+  "new_code_comprehensive": "const div = document.createElement('div');\ndiv.textContent = userInput;\nelement.replaceChildren(div);\n// Or use a sanitization library: element.innerHTML = DOMPurify.sanitize(userInput);",
+  "explanation": "This fix uses textContent instead of innerHTML so that user input is displayed as plain text. If you need HTML, use a sanitization library so only safe tags/attributes are allowed.",
+  "security_rationale": "innerHTML interprets the string as HTML. If the string contains <script> or event handlers, the browser will execute it (XSS). textContent treats the value as literal text and does not execute any markup.",
+  "why_ai_generated_this": "AI often suggests innerHTML for \"display user content\" because it is the most direct way to inject HTML, without considering that user content must be escaped or sanitized.",
+  "prerequisites": [
+    "For plain text: use textContent (no extra package). For safe HTML: use DOMPurify (npm install dompurify)"
+  ],
+  "additional_steps": [
+    "Audit all places that set innerHTML, outerHTML, or document.write with user data",
+    "Use a Content-Security-Policy header to mitigate impact of any missed XSS"
+  ],
+  "testing_suggestion": "Set userInput to '<img src=x onerror=alert(1)>' and confirm it is shown as text, not executed.",
+  "references": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html",
+    "https://cwe.mitre.org/data/definitions/79.html"
+  ]
+}

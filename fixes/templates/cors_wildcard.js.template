@@ -1,0 +1,22 @@
+{
+  "vulnerability_name": "CORS Wildcard Origin",
+  "old_code": "Access-Control-Allow-Origin: *",
+  "new_code_minimal": "Access-Control-Allow-Origin: https://your-frontend.example.com",
+  "new_code_comprehensive": "const allowedOrigins = ['https://app.example.com', 'https://admin.example.com'];\nconst origin = req.headers.origin;\nif (allowedOrigins.includes(origin)) {\n  res.setHeader('Access-Control-Allow-Origin', origin);\n}\n// Also set credentials: true only when origin is whitelisted",
+  "explanation": "This fix replaces a wildcard (*) CORS origin with a whitelist of allowed origins. A wildcard allows any website to make credentialed requests to your API, which can lead to data theft.",
+  "security_rationale": "Allowing * means any origin can call your API. If the API returns sensitive data or performs state-changing actions, an attacker can host a page that triggers requests from the victim's browser and read the response.",
+  "why_ai_generated_this": "AI often suggests CORS * to quickly fix \"blocked by CORS\" errors during development, and that configuration gets left in production.",
+  "prerequisites": [
+    "No extra packages; set Access-Control-Allow-Origin from your framework (Express, etc.) using the request Origin header"
+  ],
+  "additional_steps": [
+    "Maintain an allowlist of origins (e.g. from env ALLOWED_ORIGINS)",
+    "Do not allow credentials (cookies/auth headers) to be sent when using *",
+    "In production, avoid localhost in the allowlist unless required"
+  ],
+  "testing_suggestion": "Call the API from an origin not in the allowlist and confirm the browser blocks the response.",
+  "references": [
+    "https://portswigger.net/web-security/cors",
+    "https://cwe.mitre.org/data/definitions/942.html"
+  ]
+}

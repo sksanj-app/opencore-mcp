@@ -1,0 +1,21 @@
+{
+  "vulnerability_name": "Unsafe Deserialization (pickle)",
+  "old_code": "data = pickle.loads(user_input)",
+  "new_code_minimal": "import json\ndata = json.loads(user_input)",
+  "new_code_comprehensive": "import json\ntry:\n    data = json.loads(user_input)\nexcept json.JSONDecodeError as e:\n    raise ValueError('Invalid JSON') from e\n# Only use 'data' for structured data; never use it to reconstruct arbitrary Python objects",
+  "explanation": "This fix replaces pickle.loads() with JSON (or another safe format). Pickle can execute arbitrary Python code during deserialization, leading to remote code execution.",
+  "security_rationale": "Pickle is designed to reconstruct Python objects and can run code (e.g. __reduce__). An attacker who controls the serialized bytes can achieve code execution. JSON only represents data (dict, list, str, number, bool) and does not execute code.",
+  "why_ai_generated_this": "AI suggests pickle for \"save/load Python object\" because it is built-in and easy; it does not emphasize that pickle is unsafe for untrusted input.",
+  "prerequisites": [
+    "For structured data: use json.loads(). For untrusted YAML: use yaml.safe_load(), not yaml.load()."
+  ],
+  "additional_steps": [
+    "Audit all pickle.loads, yaml.load (use safe_load), and marshal.loads with user input",
+    "If you must use pickle, only deserialize data from trusted sources (e.g. your own process)"
+  ],
+  "testing_suggestion": "Try deserializing a pickle payload that runs os.system('id') and confirm it is not executed.",
+  "references": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html",
+    "https://cwe.mitre.org/data/definitions/502.html"
+  ]
+}

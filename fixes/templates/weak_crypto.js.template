@@ -1,0 +1,22 @@
+{
+  "vulnerability_name": "Weak Cryptography",
+  "old_code": "const hash = crypto.createHash('md5').update(password).digest('hex');",
+  "new_code_minimal": "const bcrypt = require('bcrypt');\nconst hash = await bcrypt.hash(password, 10);",
+  "new_code_comprehensive": "const bcrypt = require('bcrypt');\nconst SALT_ROUNDS = 12;\nconst hash = await bcrypt.hash(password, SALT_ROUNDS);\n// Store hash in DB. For verification: await bcrypt.compare(plainPassword, hash);",
+  "explanation": "This fix replaces weak or non-cryptographic hashing (e.g. MD5, SHA1 without salt, Math.random()) with industry-standard methods: bcrypt or argon2 for passwords, crypto.randomBytes for tokens.",
+  "security_rationale": "MD5 and SHA1 are fast and deterministic, so attackers can precompute hashes (rainbow tables). bcrypt/argon2 are designed for passwords: they are slow and use a salt, making brute force impractical.",
+  "why_ai_generated_this": "AI often suggests MD5 or SHA1 because they are simple and appear in old tutorials; it does not emphasize that password hashing requires dedicated algorithms.",
+  "prerequisites": [
+    "npm install bcrypt (or argon2 for newer projects)",
+    "For random IDs/tokens use: require('crypto').randomBytes(32).toString('hex')"
+  ],
+  "additional_steps": [
+    "Do not use Math.random() for security-sensitive values; use crypto.randomBytes",
+    "Migrate existing weak hashes to bcrypt on next login or with a one-time script"
+  ],
+  "testing_suggestion": "Verify that hashes differ for the same password (due to salt) and that compare() returns true for correct password.",
+  "references": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+    "https://cwe.mitre.org/data/definitions/327.html"
+  ]
+}

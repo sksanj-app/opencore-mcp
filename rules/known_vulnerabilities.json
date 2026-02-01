@@ -1,0 +1,152 @@
+[
+  {
+    "package": "lodash",
+    "language": "javascript",
+    "vulnerable_versions": "<4.17.21",
+    "cve": "CVE-2020-8203",
+    "severity": "high",
+    "fixed_version": "4.17.21",
+    "description": "Prototype pollution vulnerability",
+    "ai_risk": "AI often suggests lodash without checking version"
+  },
+  {
+    "package": "axios",
+    "language": "javascript",
+    "vulnerable_versions": "<0.21.2",
+    "cve": "CVE-2021-3749",
+    "severity": "high",
+    "fixed_version": "0.21.2",
+    "description": "Server-Side Request Forgery",
+    "ai_risk": "AI frequently suggests axios for HTTP without version constraints"
+  },
+  {
+    "package": "minimist",
+    "language": "javascript",
+    "vulnerable_versions": "<1.2.6",
+    "cve": "CVE-2021-44906",
+    "severity": "high",
+    "fixed_version": "1.2.6",
+    "description": "Prototype Pollution",
+    "ai_risk": "Common transitive dependency; AI may not pin safe version"
+  },
+  {
+    "package": "express",
+    "language": "javascript",
+    "vulnerable_versions": "<4.17.3",
+    "cve": "CVE-2022-24999",
+    "severity": "medium",
+    "fixed_version": "4.17.3",
+    "description": "XSS vulnerability",
+    "ai_risk": "AI suggests express without security updates"
+  },
+  {
+    "package": "jsonwebtoken",
+    "language": "javascript",
+    "vulnerable_versions": "<9.0.0",
+    "cve": "CVE-2022-23529",
+    "severity": "high",
+    "fixed_version": "9.0.0",
+    "description": "Token Verification Bypass",
+    "ai_risk": "AI often suggests JWT libraries without verifying CVE status"
+  },
+  {
+    "package": "ejs",
+    "language": "javascript",
+    "vulnerable_versions": "<3.1.7",
+    "cve": "CVE-2022-29078",
+    "severity": "critical",
+    "fixed_version": "3.1.7",
+    "description": "Remote Code Execution",
+    "ai_risk": "AI suggests EJS for templating without security context"
+  },
+  {
+    "package": "moment",
+    "language": "javascript",
+    "vulnerable_versions": "<2.29.4",
+    "cve": "Multiple CVEs",
+    "severity": "medium",
+    "fixed_version": "2.29.4",
+    "description": "Multiple vulnerabilities in date handling",
+    "ai_risk": "AI frequently suggests moment despite deprecation and CVEs"
+  },
+  {
+    "package": "node-fetch",
+    "language": "javascript",
+    "vulnerable_versions": "<2.6.7",
+    "cve": "CVE-2022-0235",
+    "severity": "medium",
+    "fixed_version": "2.6.7",
+    "description": "Exposure of Sensitive Information",
+    "ai_risk": "AI suggests node-fetch without version pinning"
+  },
+  {
+    "package": "django",
+    "language": "python",
+    "vulnerable_versions": "<3.2.18",
+    "cve": "Multiple CVEs",
+    "severity": "high",
+    "fixed_version": "3.2.18",
+    "description": "Multiple SQL injection, XSS vulnerabilities",
+    "ai_risk": "AI suggests Django patterns without checking LTS version"
+  },
+  {
+    "package": "flask",
+    "language": "python",
+    "vulnerable_versions": "<2.2.5",
+    "cve": "CVE-2023-30861",
+    "severity": "medium",
+    "fixed_version": "2.2.5",
+    "description": "Cookie Security vulnerability",
+    "ai_risk": "AI often suggests Flask without security updates"
+  },
+  {
+    "package": "requests",
+    "language": "python",
+    "vulnerable_versions": "<2.31.0",
+    "cve": "CVE-2023-32681",
+    "severity": "medium",
+    "fixed_version": "2.31.0",
+    "description": "Proxy Authentication vulnerability",
+    "ai_risk": "AI suggests requests without version constraints"
+  },
+  {
+    "package": "pillow",
+    "language": "python",
+    "vulnerable_versions": "<10.0.0",
+    "cve": "Multiple CVEs",
+    "severity": "high",
+    "fixed_version": "10.0.0",
+    "description": "Multiple RCE vulnerabilities",
+    "ai_risk": "AI suggests Pillow for image handling without safe version"
+  },
+  {
+    "package": "pyyaml",
+    "language": "python",
+    "vulnerable_versions": "<6.0.1",
+    "cve": "CVE-2020-14343",
+    "severity": "high",
+    "fixed_version": "6.0.1",
+    "description": "Remote Code Execution via unsafe load",
+    "ai_risk": "AI suggests yaml.load() and PyYAML without safe_load"
+  },
+  {
+    "package": "cryptography",
+    "language": "python",
+    "vulnerable_versions": "<41.0.0",
+    "cve": "Multiple CVEs",
+    "severity": "medium",
+    "fixed_version": "41.0.0",
+    "description": "Multiple vulnerabilities in crypto primitives",
+    "ai_risk": "AI suggests cryptography without version pinning"
+  },
+  {
+    "package": "urllib3",
+    "language": "python",
+    "vulnerable_versions": "<1.26.17",
+    "cve": "CVE-2023-43804",
+    "severity": "medium",
+    "fixed_version": "1.26.17",
+    "description": "Cookie Leakage vulnerability",
+    "ai_risk": "Common transitive dependency; AI may not pin version"
+  }
+]
