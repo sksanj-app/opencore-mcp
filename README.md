@@ -1,6 +1,6 @@
 # Opencore MCP
 
-A production-ready **Model Context Protocol (MCP)** server for code analysis, automated fixing, and dependency management. OpenCore MCP exposes tools, resources, and prompts through a configurable rules engine that supports multiple programming languages.
+A production-ready **Model Context Protocol (MCP)** server for code analysis, automated fixing, and dependency management. Opencore exposes tools, resources, and prompts through a configurable rules engine that supports multiple programming languages.
 
 ## Features
 
